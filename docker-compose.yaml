@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  asyncio-chainable:
+    container_name: asyncio-chainable
+    image: asyncio-chainable
+    build:
+      context: .
+      args:
+        EXTRAS: "[test]"
+    tty: true
+    env_file: .env
+    entrypoint: ["bash"]
+    volumes:
+      - .:/asyncio-chainable
