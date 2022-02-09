@@ -4,6 +4,10 @@ Making asyncio coroutines chainable
 
 Built on: Python3 and Docker (alpine) and Poetry (Package Manager)<br>
 Maintained by: Chris Lee [sihrc.c.lee@gmail.com]
+## Installation
+```bash
+pip3 install asyncio_chainable
+```
 
 ## Example Usage
 ```python3
