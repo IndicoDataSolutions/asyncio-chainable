@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "asyncio-chainable"
-version = "0.1.2"
+version = "0.1.3"
 description = "Making asyncio coroutines chainable"
 authors = ["Chris Lee <sihrc.c.lee@gmail.com>"]
 readme = "README.md"
@@ -13,10 +13,10 @@ repository = "https://github.com/sihrc/asyncio-chainable"
 [tool.poetry.dependencies]
 python = "^3.7"
 setuptools = "^57.4.0"
-pytest = {version = "^6.2.4", extras = ["test"]}
-pytest-asyncio = {version = "*", extras = ["test"]}
 
 [tool.poetry.dev-dependencies]
+pytest = ">=6.2.4"
+pytest-asyncio = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
