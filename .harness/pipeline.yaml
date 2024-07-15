@@ -1,0 +1,108 @@
+pipeline:
+  name: asyncio-chainable
+  identifier: asynciochainable
+  tags: {}
+  template:
+    templateRef: account.shared_library
+    versionLabel: 1.1.0
+    gitBranch: main
+    templateInputs:
+      properties:
+        ci:
+          codebase:
+            build: <+input>
+      stages:
+        - stage:
+            identifier: build_info
+            type: CI
+            spec:
+              infrastructure:
+                type: KubernetesDirect
+                spec:
+                  nodeSelector:
+                    node_group: cpu
+        - parallel:
+            - stage:
+                identifier: code_checks
+                template:
+                  templateInputs:
+                    type: CI
+                    variables:
+                      - name: RUN_LINTER
+                        type: String
+                        value: <+input>.default(TRUE).allowedValues(TRUE,FALSE)
+                      - name: isort
+                        type: String
+                        value: ""
+                      - name: black
+                        type: String
+                        value: ""
+                      - name: ruff
+                        type: String
+                        value: ruff check asyncio_chainable tests
+                      - name: mypy
+                        type: String
+                        value: ""
+                      - name: pylint
+                        type: String
+                        value: ""
+            - stage:
+                identifier: build_containers
+                type: CI
+                variables:
+                  - name: test_poetry_args
+                    type: String
+                    value: "--with dev --all-extras"
+                  - name: deploy_poetry_args
+                    type: String
+                    value: " "
+                  - name: test_ram
+                    type: String
+                    value: 2G
+                  - name: deploy_ram
+                    type: String
+                    value: 2G
+        - parallel:
+            - stage:
+                identifier: unit_tests
+                template:
+                  templateInputs:
+                    type: CI
+                    variables:
+                      - name: test_command
+                        type: String
+                        value: pytest -sv tests
+                      - name: git_lfs
+                        type: String
+                        value: "FALSE"
+                      - name: node_selector
+                        type: String
+                        value: cpu
+                      - name: test_ram
+                        type: String
+                        value: 2G
+                      - name: test_cpu
+                        type: String
+                        value: 500m
+            - stage:
+                identifier: snyk_tests
+                type: CI
+                variables:
+                  - name: RUN_SNYK
+                    type: String
+                    value: <+input>.default(TRUE).allowedValues(TRUE,FALSE)
+                  - name: container_ram
+                    type: String
+                    value: 2G
+      variables:
+        - name: repo
+          type: String
+          value: asyncio-chainable
+        - name: service
+          type: String
+          value: asyncio-chainable
+        - name: RUN_UNITTESTS
+          type: String
+          value: <+input>.default(TRUE).allowedValues(TRUE,FALSE)
+  projectIdentifier: IPA_Release
+  orgIdentifier: default

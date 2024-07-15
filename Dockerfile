@@ -1,17 +1,37 @@
-FROM python:3.8
+ARG REGISTRY_PATH='harbor.devops.indico.io/indico'
+ARG BUILD_TAG=latest
 
-LABEL author="Chris Lee"
-LABEL email="sihrc.c.lee@gmail.com"
 
-ARG EXTRAS="[test]"
-ENV PATH=/asyncio-chainable/bin:/root/.poetry/bin:${PATH}
+# builder stage
+FROM ${REGISTRY_PATH}/ubuntu-2204-build:${BUILD_TAG} as poetry-installer
+ARG POETRY_INSTALL_ARGS
+ARG GEMFURY_TOKEN
 
-RUN curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3 -
+COPY pyproject.toml poetry.lock /venv/
 
-COPY . /asyncio-chainable
-WORKDIR /asyncio-chainable
+RUN poetry export \
+        -f requirements.txt \
+        --output requirements.txt \
+        --without-hashes  \
+        ${POETRY_INSTALL_ARGS} && \
+    sed -i "s/pypi.fury.io/${GEMFURY_TOKEN}@pypi.fury.io/" requirements.txt  && \
+    pip3 install -r requirements.txt --no-deps
 
-RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
 
-CMD ["bash"]
+# image
+FROM ${REGISTRY_PATH}/ubuntu-2204-deploy:${BUILD_TAG}
+RUN apt-get update && \
+    apt-get install \
+      --no-install-recommends \
+      --no-install-suggests \
+      --yes \
+      --fix-broken \
+        libmagic1 && \
+    apt-get clean
+
+WORKDIR /asyncio_chainable
+
+COPY --from=poetry-installer /venv /venv
+COPY . /asyncio_chainable
+
+CMD ["sleep", "infinity"]

@@ -1,22 +1,36 @@
 [tool.poetry]
-name = "asyncio-chainable"
-version = "0.1.3"
+name = "indicodata-asyncio-chainable"
+version = "0.1.4-rc0+init.0"
 description = "Making asyncio coroutines chainable"
 authors = ["Chris Lee <sihrc.c.lee@gmail.com>"]
 readme = "README.md"
-include = ["LICENSE",]
-keywords = ["asyncio"]
-license = "MIT"
-homepage = "https://github.com/sihrc/asyncio-chainable"
-repository = "https://github.com/sihrc/asyncio-chainable"
+packages = [{include = "asyncio_chainable"}]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-setuptools = "^57.4.0"
+python = ">3.10"
 
-[tool.poetry.dev-dependencies]
-pytest = ">=6.2.4"
-pytest-asyncio = "*"
+[tool.poetry.group.dev.dependencies]
+pytest = "<8"
+pytest-asyncio = "<0.21"
+
+[tool.pytest.ini_options]
+addopts = "-ra -sv"
+asyncio_mode="auto"
+testpaths = [
+    "tests"
+]
+
+[tool.semantic_release]
+version_toml = ["pyproject.toml:tool.poetry.version"]
+branch = "development"
+upload_to_repository=true
+repository_url="https://push.fury.io/indico"
+build_command="poetry build"
+
+[[tool.poetry.source]]
+name = "fury"
+url = "https://pypi.fury.io/indico/"
+priority = "supplemental"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
