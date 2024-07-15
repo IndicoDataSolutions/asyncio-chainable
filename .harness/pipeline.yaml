@@ -33,19 +33,19 @@ pipeline:
                         value: <+input>.default(TRUE).allowedValues(TRUE,FALSE)
                       - name: isort
                         type: String
-                        value: <+input>
+                        value: ""
                       - name: black
                         type: String
-                        value: <+input>
+                        value: ""
                       - name: ruff
                         type: String
                         value: ruff check asyncio_chainable tests
                       - name: mypy
                         type: String
-                        value: <+input>
+                        value: ""
                       - name: pylint
                         type: String
-                        value: <+input>
+                        value: ""
             - stage:
                 identifier: build_containers
                 type: CI
