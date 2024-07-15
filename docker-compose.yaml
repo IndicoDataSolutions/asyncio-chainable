@@ -7,7 +7,6 @@ services:
       args:
         POETRY_INSTALL_ARGS: "--with dev --all-extras"
         GEMFURY_TOKEN: "${GEMFURY_TOKEN}"
-        EXTRAS: "[test]"
     entrypoint: ["bash"]
     volumes:
       - .:/asyncio-chainable
