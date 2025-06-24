@@ -4,22 +4,37 @@ Making asyncio coroutines chainable
 Author: Chris Lee
 Email: sihrc.c.lee@gmail.com
 """
+
 import inspect
 from typing import Awaitable
 
-RESERVED_ATTRS = ("__initial_coroutine__", "__chained_calls__")
+RESERVED_ATTRS = ("__initial_coroutine__", "__chained_calls__", "__cached_result__")
 
 
 class AsyncChainable:
     def __init__(self, initial_coroutine: Awaitable):
         self.__initial_coroutine__ = initial_coroutine
         self.__chained_calls__ = []
+        self.__cached_result__ = None
 
     def __await__(self):
         async def chain():
-            chainable = await self.__initial_coroutine__
+            # If we have a cached result, use it instead of awaiting the initial coroutine
+            if self.__cached_result__ is not None:
+                chainable = self.__cached_result__
+            else:
+                chainable = await self.__initial_coroutine__
+                # Cache the result after successful await
+                self.__cached_result__ = chainable
+
+            # Execute remaining chained calls
             for method, args, kwargs in self.__chained_calls__:
                 chainable = await getattr(chainable, method)(*args, **kwargs)
+                # Cache the result after each successful operation
+                self.__cached_result__ = chainable
+
+            # Clear the chain since all operations have been executed
+            self.__chained_calls__.clear()
             return chainable
 
         return chain().__await__()
