@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "indicodata-asyncio-chainable"
-version = "0.2.3"
+version = "0.3.0"
 description = "Making asyncio coroutines chainable"
 authors = ["Chris Lee <sihrc.c.lee@gmail.com>"]
 readme = "README.md"

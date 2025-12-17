@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.0 (2025-12-17)
+### Feature
+* To_coroutine ([`14574d8`](https://github.com/IndicoDataSolutions/asyncio-chainable/commit/14574d8f6fb59e2fceda9f94e4162c1a8b709f46))
+
 ## v0.2.3 (2025-06-24)
 ### Fix
 * [DEV-?] can await again partial chain ([#3](https://github.com/IndicoDataSolutions/asyncio-chainable/issues/3)) ([`3387567`](https://github.com/IndicoDataSolutions/asyncio-chainable/commit/3387567537546ec7d092d5f6b1e33e5fa9a836f3))
