@@ -39,6 +39,16 @@ class AsyncChainable:
 
         return chain().__await__()
 
+    def to_coroutine(self):
+        """
+        Convert this AsyncChainable to a coroutine object.
+        This is useful for functions like asyncio.run_coroutine_threadsafe()
+        that require a coroutine object rather than just an awaitable.
+        """
+        async def coro():
+            return await self
+        return coro()
+
     def __getattr__(self, attr, **getattr_kwargs):
         if attr in RESERVED_ATTRS:
             return super().__getattr__(self, attr, **getattr_kwargs)
